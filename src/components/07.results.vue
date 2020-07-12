@@ -6,6 +6,9 @@
 
 <script>
 export default {
+    created(){
+        console.log(this.$route.query.q)
+    }
 
 }
 </script>

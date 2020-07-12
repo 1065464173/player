@@ -1,7 +1,8 @@
 <template>
   <div class="top">
       <img src="../assets/01.top.png" alt="">
-      <input type="text" placeholder="搜索" v-model="inputValue">
+      <input type="text" placeholder="搜索" v-model="inputValue" @keyup.enter="toSearch"  />
+      <el-button plain>朴素按钮</el-button>
   </div>
 </template>
 
@@ -12,6 +13,13 @@ export default {
       inputValue:""
     }
   },
+  methods:{
+    toSearch(){
+      // console.log(this.inputValue)
+      if(this.inputValue==''){alert('请输入内容')}
+      else{this.$router.push(`/results?q=${this.inputValue}`)}
+    }
+  }
 }
 </script>
 
