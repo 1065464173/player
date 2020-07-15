@@ -1,25 +1,22 @@
 <template>
-  <div>
-    <top></top>
-    <index></index>
+  <div id="app">
+    <top />
+    <index />
   </div>
 </template>
 
 <script>
-import top from './components/01.top.vue'
-import index from './components/02.index.vue'
+import top from './components/01.top.vue';
+import index from './components/02.index.vue';
 export default {
-  components:{
+  name: 'app',
+  components: {
     top,
-    index,
+    index
   }
-
-}
+};
 </script>
 
-<style>
-*{
-  margin: 0;
-  padding: 0;
-}
+<style >
+
 </style>
