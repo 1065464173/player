@@ -44,7 +44,6 @@
               <td>你要相信这不是最后一天</td>
               <td>06:03</td>
             </tr>
-
           </tbody>
         </table>
       </el-tab-pane>
@@ -56,7 +55,7 @@
                 播放量:
                 <span class="num">66892</span>
               </div>
-              <img src="../assets/cover.jpg" alt="" />
+              <img src="../assets/cover.jpg" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">编辑推荐：一起探索这个未知的音乐罐头吧！</p>
@@ -67,7 +66,7 @@
                 播放量:
                 <span class="num">66892</span>
               </div>
-              <img src="../assets/cover.jpg" alt="" />
+              <img src="../assets/cover.jpg" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">编辑推荐：一起探索这个未知的音乐罐头吧！</p>
@@ -78,7 +77,7 @@
                 播放量:
                 <span class="num">66892</span>
               </div>
-              <img src="../assets/cover.jpg" alt="" />
+              <img src="../assets/cover.jpg" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">编辑推荐：一起探索这个未知的音乐罐头吧！</p>
@@ -89,7 +88,7 @@
                 播放量:
                 <span class="num">66892</span>
               </div>
-              <img src="../assets/cover.jpg" alt="" />
+              <img src="../assets/cover.jpg" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">编辑推荐：一起探索这个未知的音乐罐头吧！</p>
@@ -100,7 +99,7 @@
                 播放量:
                 <span class="num">66892</span>
               </div>
-              <img src="../assets/cover.jpg" alt="" />
+              <img src="../assets/cover.jpg" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">编辑推荐：一起探索这个未知的音乐罐头吧！</p>
@@ -111,7 +110,7 @@
         <div class="items mv">
           <div class="item">
             <div class="img-wrap">
-              <img src="../assets/mvCover.jpg" alt="" />
+              <img src="../assets/mvCover.jpg" alt />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -126,7 +125,7 @@
           </div>
           <div class="item">
             <div class="img-wrap">
-              <img src="../assets/mvCover.jpg" alt="" />
+              <img src="../assets/mvCover.jpg" alt />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -141,7 +140,7 @@
           </div>
           <div class="item">
             <div class="img-wrap">
-              <img src="../assets/mvCover.jpg" alt="" />
+              <img src="../assets/mvCover.jpg" alt />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -156,7 +155,7 @@
           </div>
           <div class="item">
             <div class="img-wrap">
-              <img src="../assets/mvCover.jpg" alt="" />
+              <img src="../assets/mvCover.jpg" alt />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -171,7 +170,7 @@
           </div>
           <div class="item">
             <div class="img-wrap">
-              <img src="../assets/mvCover.jpg" alt="" />
+              <img src="../assets/mvCover.jpg" alt />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -191,17 +190,56 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: 'result',
+  name: "result",
   data() {
     return {
-      activeIndex: 'songs',
- 
+      //活动页
+      activeIndex: "songs",
+      //搜索关键字
+      q: "",
+      //返回数量
+      limit: 30,
+      //返回歌曲类型type 歌曲:1，歌单:1000，MV:1004
+      type: 1
     };
+  },
+  methods: {
+    //获取搜索关键字，跳转请求页
+    toQuery() {
+      this.q = this.$route.query.q; 
+    },
+    //获取搜索信息
+    list() {
+      axios({
+        method: "get",
+        url: "https://autumnfish.cn/search",
+        params: {
+          keywords:this.q,
+          limit:30,
+          offset:0,
+          type:1,
+        }
+      }).then(res=>{
+        console.log(res);
+      });
+    }
+  },
+  created() {
+    //跳转请求页
+    this.toQuery();
+    //获取跳转信息
+    this.list();
+  },
+  watch: {
+    //跳转请求页
+    query() {
+      toQuery();
+    }
   }
 };
 </script>
 
 <style >
-
 </style>

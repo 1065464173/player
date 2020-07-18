@@ -33,7 +33,7 @@
         <div class="item" v-for="(item,index) in newestlist" :key="index">
           <div class="img-wrap">
             <img :src="item.picUrl" alt="" />
-            <span class="iconfont icon-play"></span>
+            <span class="iconfont icon-play" @click="playMusic(item.id)"></span>
           </div>
           <div class="song-wrap">
             <div class="song-name">{{item.name}}</div>
@@ -46,60 +46,18 @@
     <div class="mvs">
       <h3 class="title">推荐MV</h3>
       <div class="items">
-        <div class="item">
+        <div class="item" v-for="(item,index) in mvlist" :key="index">
           <div class="img-wrap">
-            <img src="../assets/mvCover.jpg" alt="" />
+            <img :src="item.picUrl" alt="" />
             <span class="iconfont icon-play"></span>
             <div class="num-wrap">
               <div class="iconfont icon-play"></div>
-              <div class="num">9912</div>
+              <div class="num">{{item.playCount}}</div>
             </div>
           </div>
           <div class="info-wrap">
-            <div class="name">HEYNA</div>
-            <div class="singer">余恩</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="img-wrap">
-            <img src="../assets/mvCover.jpg" alt="" />
-            <span class="iconfont icon-play"></span>
-            <div class="num-wrap">
-              <div class="iconfont icon-play"></div>
-              <div class="num">9912</div>
-            </div>
-          </div>
-          <div class="info-wrap">
-            <div class="name">HEYNA</div>
-            <div class="singer">余恩</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="img-wrap">
-            <img src="../assets/mvCover.jpg" alt="" />
-            <span class="iconfont icon-play"></span>
-            <div class="num-wrap">
-              <div class="iconfont icon-play"></div>
-              <div class="num">9912</div>
-            </div>
-          </div>
-          <div class="info-wrap">
-            <div class="name">HEYNA</div>
-            <div class="singer">余恩</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="img-wrap">
-            <img src="../assets/mvCover.jpg" alt="" />
-            <span class="iconfont icon-play"></span>
-            <div class="num-wrap">
-              <div class="iconfont icon-play"></div>
-              <div class="num">9912</div>
-            </div>
-          </div>
-          <div class="info-wrap">
-            <div class="name">HEYNA</div>
-            <div class="singer">余恩</div>
+            <div class="name">{{item.name}}</div>
+            <div class="singer">{{item.artists[0].name}}</div>
           </div>
         </div>
       </div>
@@ -119,8 +77,8 @@ export default {
       recommandlist:[],
       //最新音乐
       newestlist:[],
-      
-
+      //推荐MV
+      mvlist:[],
     }
   },
   created() {
@@ -141,6 +99,26 @@ export default {
       url: "https://autumnfish.cn/personalized/newsong",
       params: {}
       }).then(res=>{this.newestlist=res.data.result})
+    //最新mv
+    axios({
+      method:'get',
+      url: 'https://autumnfish.cn/personalized/mv',
+    }).then(res=>{
+      this.mvlist=res.data.result
+    })
+  },
+  methods: {
+    //播放音乐
+    playMusic(id){
+      axios({
+        method:'get',
+        url:'https://autumnfish.cn/song/url',
+        params:{id},
+      }).then(res=>{
+        id
+        this.$parent.musicUrl=res.data.data[0].url
+      })
+    }
   },
 }
 </script>
