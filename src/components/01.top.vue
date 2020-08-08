@@ -49,9 +49,7 @@ export default {
         });
       } else {
       this.$router.push({ path: "result", query: { q: `${this.query}` } });
-        
       }
-      // this.$router.push(`/result?query=${this.query}`);
     }
   }
 };

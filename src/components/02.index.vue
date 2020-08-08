@@ -1,7 +1,7 @@
 <template>
   <div class="index-container">
     <!-- 导航区域 -->
-    <div class="nav" >
+    <div class="nav">
       <ul>
         <li>
           <router-link to="/discovery">
@@ -35,22 +35,58 @@
     </div>
     <!-- 播放标签 -->
     <div class="player">
-      <audio :src='musicUrl' controls autoplay></audio>
+      <audio id="audio" :src="musicUrl" controls autoplay @click="playGroup" @ended="playGroup"></audio>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: 'index',
+  name: "index",
   data() {
     return {
-      musicUrl:"http://m7.music.126.net/20200303182550/8aa5971b1630d1527a922ccd2b97f392/ymusic/035d/0109/520e/478f86cc9f6c6539f7c8ed3e06c1bf8e.mp3"
+      //audio对象
+      audio: document.getElementById("audio"),
+      //组播放
+      audioGroup: [],
+      //组播放计数
+      groupIndex: 0,
+      //单曲播放
+      musicUrl: "",
+      group: [],
     };
-  }
+  },
+  methods: {
+    playGroup() {
+      console.log("开始播放");
+      if (this.groupIndex <= this.audioGroup.length - 1) {
+        //通过其id获取url
+        axios({
+          method: "get",
+          url: "https://autumnfish.cn/song/url",
+          params: { id: this.audioGroup[this.groupIndex] },
+        }).then((res) => {
+          this.musicUrl = res.data.data[0].url;
+        });
+        this.groupIndex++;
+        console.log("播放到" + this.groupIndex);
+      } else {
+        console.log("组播放结束");
+      }
+    },
+  },
+  created() {
+  },
+  watch: {
+    audioGroup() {
+      this.groupIndex=0
+      console.log(this.audioGroup)
+      this.playGroup();
+    },
+  },
 };
 </script>
 
 <style >
-
 </style>

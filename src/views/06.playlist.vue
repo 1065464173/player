@@ -1,40 +1,36 @@
 <template>
   <div class="playlist-container">
+    <!-- 歌单top信息 -->
     <div class="top-wrap">
       <div class="img-wrap">
-        <img src="../assets/playListCover.jpg" alt="" />
+        <img :src="playlist.coverImgUrl" alt />
       </div>
       <div class="info-wrap">
-        <p class="title">俗世里的烟火气|总有些瞬间 让你热泪盈眶</p>
+        <p class="title">{{playlist.name}}</p>
         <div class="author-wrap">
-          <img class="avatar" src="../assets/avatar.jpg" alt="" />
-          <span class="name">原创君</span>
-          <span class="time">2020-2-26 创建</span>
+          <img class="avatar" :src="playlist.creator.avatarUrl" alt />
+          <span class="name">{{playlist.creator.nickname}}</span>
+          <span class="time">{{playlist.createTime}} 创建</span>
         </div>
         <div class="play-wrap">
           <span class="iconfont icon-circle-play"></span>
-          <span class="text">播放全部</span>
+          <span class="bottom" @click="playGroup">播放全部</span>
         </div>
         <div class="tag-wrap">
           <span class="title">标签:</span>
           <ul>
-            <li>华语</li>
-            <li>怀旧</li>
-            <li>感动</li>
+            <li v-for="(item,index) in playlist.tags" :key="index">{{item}}</li>
           </ul>
         </div>
         <div class="desc-wrap">
           <span class="title">简介:</span>
-          <span class="desc"
-            >你是否曾在某个瞬间 被一次日落击中心中最柔软的部分 曾在回家途中
-            被袅袅升起的饭菜香味感动得热泪盈眶？ 生活或许有时不尽如人意
-            却总有一些叫“烟火气”的东西 使得我们在这个俗世中 依然保持希望
-            封面来自网络</span
-          >
+          <span class="desc">{{playlist.description}}</span>
         </div>
       </div>
     </div>
+    <!-- 列表 -->
     <el-tabs v-model="activeIndex">
+      <!-- 歌曲 -->
       <el-tab-pane label="歌曲列表" name="1">
         <table class="el-table playlit-table">
           <thead>
@@ -46,123 +42,77 @@
             <th>时长</th>
           </thead>
           <tbody>
-            <tr class="el-table__row">
-              <td>1</td>
+            <tr class="el-table__row" v-for="(item,index) in playlist.tracks" :key="index">
+              <td>{{index+1}}</td>
               <td>
                 <div class="img-wrap">
-                  <img src="../assets/songCover.jpg" alt="" />
-                  <span class="iconfont icon-play"></span>
+                  <img :src="item.al.picUrl" alt />
+                  <span class="iconfont icon-play" @click="playMusic(item.id)"></span>
                 </div>
               </td>
               <td>
                 <div class="song-wrap">
                   <div class="name-wrap">
-                    <span>你要相信这不是最后一天</span>
-                    <span class="iconfont icon-mv"></span>
-                  </div>
-                  <span>电视剧加油练习生插曲</span>
-                </div>
-              </td>
-              <td>华晨宇</td>
-              <td>你要相信这不是最后一天</td>
-              <td>06:03</td>
-            </tr>
-            <tr class="el-table__row">
-              <td>2</td>
-               <td>
-                <div class="img-wrap">
-                  <img src="../assets/songCover.jpg" alt="" />
-                  <span class="iconfont icon-play"></span>
-                </div>
-              </td>
-              <td>
-                <div class="song-wrap">
-                  <div class="name-wrap">
-                    <span>你要相信这不是最后一天</span>
+                    <span>{{item.name}}</span>
                     <span class="iconfont icon-mv"></span>
                   </div>
                 </div>
               </td>
-              <td>华晨宇</td>
-              <td>你要相信这不是最后一天</td>
-              <td>06:03</td>
+              <td>{{item.ar[0].name}}</td>
+              <td>{{item.al.name}}</td>
+              <td>{{item.dt}}</td>
             </tr>
           </tbody>
         </table>
       </el-tab-pane>
-      <el-tab-pane label="评论(66)" name="2">
+      <!-- 评论 -->
+      <el-tab-pane label="评论" name="2">
         <!-- 精彩评论 -->
         <div class="comment-wrap">
-          <p class="title">精彩评论<span class="number">(666)</span></p>
+          <p class="title">
+            精彩评论
+            <span class="number"></span>
+          </p>
           <div class="comments-wrap">
-            <div class="item">
+            <div class="item" v-for="(item,index) in hotcomment" :key="index">
               <div class="icon-wrap">
-                <img src="../assets/avatar.jpg" alt="" />
+                <img :src="item.user.avatarUrl" alt />
               </div>
               <div class="content-wrap">
                 <div class="content">
-                  <span class="name">爱斯基摩：</span>
-                  <span class="comment">谁说的，长大了依旧可爱哈</span>
+                  <span class="name">{{item.user.nickname}}:</span>
+                  <span class="comment">{{item.content}}</span>
                 </div>
-                <div class="re-content">
-                  <span class="name">小苹果：</span>
-                  <span class="comment">还是小时候比较可爱</span>
+                <div class="re-content" v-for="(it,id) in item.beReplied" :key="id">
+                  <span class="name">{{it.user.nickname}}</span>
+                  <span class="comment">{{it.content}}</span>
                 </div>
-                <div class="date">2020-02-12 17:26:11</div>
+                <div class="date">{{item.time}}</div>
               </div>
             </div>
           </div>
         </div>
         <!-- 最新评论 -->
         <div class="comment-wrap">
-          <p class="title">最新评论<span class="number">(666)</span></p>
+          <p class="title">
+            最新评论
+            <span class="number"></span>
+          </p>
           <div class="comments-wrap">
-            <div class="item">
+            <div class="item" v-for="(item,index) in newcomment" :key="index">
               <div class="icon-wrap">
-                <img src="../assets/avatar.jpg" alt="" />
+                <img :src="item.user.avatarUrl" alt />
               </div>
               <div class="content-wrap">
                 <div class="content">
-                  <span class="name">爱斯基摩：</span>
-                  <span class="comment">谁说的，长大了依旧可爱哈</span>
+                  <span class="name">{{item.user.nickname}}:</span>
+                  <span class="comment">{{item.content}}</span>
                 </div>
-                <div class="re-content">
-                  <span class="name">小苹果：</span>
-                  <span class="comment">还是小时候比较可爱</span>
+                <div class="re-content" v-for="(it,id) in item.beReplied" :key="id">
+                  <span class="name">{{it.user.nickname}}</span>
+                  <span class="comment">{{it.content}}</span>
                 </div>
-                <div class="date">2020-02-12 17:26:11</div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="icon-wrap">
-                <img src="../assets/avatar.jpg" alt="" />
-              </div>
-              <div class="content-wrap">
-                <div class="content">
-                  <span class="name">爱斯基摩：</span>
-                  <span class="comment">谁说的，长大了依旧可爱哈</span>
-                </div>
-                <div class="re-content">
-                  <span class="name">小苹果：</span>
-                  <span class="comment">还是小时候比较可爱</span>
-                </div>
-                <div class="date">2020-02-12 17:26:11</div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="icon-wrap">
-                <img src="../assets/avatar.jpg" alt="" />
-              </div>
-              <div class="content-wrap">
-                <div class="content">
-                  <span class="name">爱斯基摩：</span>
-                  <span class="comment">谁说的，长大了依旧可爱哈</span>
-                </div>
-                <div class="re-content">
-                  <span class="name">小苹果：</span>
-                  <span class="comment">还是小时候比较可爱</span>
-                </div>
-                <div class="date">2020-02-12 17:26:11</div>
+                <div class="date">{{item.time}}</div>
               </div>
             </div>
           </div>
@@ -175,33 +125,133 @@
           :total="total"
           :current-page="page"
           :page-size="5"
-        >
-        </el-pagination>
+          :limit="limit"
+        ></el-pagination>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: 'playlist',
+  name: "playlist",
   data() {
     return {
-      activeIndex: '1',
+      activeIndex: "1",
       // 总条数
       total: 0,
       // 页码
-      page: 1
+      page: 1,
+      // 页容量
+      limit: 10,
+      //歌单列表
+      playlist: {},
+      //热门评论
+      hotcomment: [],
+      //最新评论
+      newcomment: [],
+      //歌单ID组
+      musicIdGroup: [],
+      //歌单URL组
+      musicUrlGroup: [],
     };
   },
   methods: {
+    //获取歌单
+    getList() {
+      axios({
+        method: "get",
+        url: "https://autumnfish.cn/playlist/detail",
+        params: { id: this.$route.query.id },
+      }).then((res) => {
+        //获取数据
+        this.playlist = res.data.playlist;
+        //处理时长毫秒转化为分秒
+        for (let i = 0; i < this.playlist.tracks.length; i++) {
+          let duration = this.playlist.tracks[i].dt;
+          //转化分
+          let min = parseInt(duration / 1000 / 60);
+          if (min < 10) {
+            min = "0" + min;
+          }
+          //转化秒
+          let sec = parseInt((duration / 1000) % 60);
+          if (sec < 10) {
+            sec = "0" + sec;
+          }
+          this.playlist.tracks[i].dt = `${min}:${sec}`;
+        }
+      });
+    },
+    //获取热门评论(歌单)
+    getComment() {
+      axios({
+        method: "get",
+        url: "https://autumnfish.cn/comment/playlist",
+        params: {
+          id: this.$route.query.id,
+          //0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频
+          type: 2,
+          limit: this.limit,
+          offset: (this.page - 1) * this.limit,
+        },
+      }).then((res) => {
+        console.log(res);
+        //获取热门评论
+        this.hotcomment = res.data.hotComments;
+        //获取最新评论
+        this.newcomment = res.data.comments;
+        //获取页码数据总数
+        this.total = res.data.total;
+      });
+    },
+    //播放单歌
+    playMusic(id) {
+      axios({
+        method: "get",
+        url: "https://autumnfish.cn/song/url",
+        params: { id },
+      }).then((res) => {
+        id;
+        this.$parent.musicUrl = res.data.data[0].url;
+      });
+    },
+    //播放歌单
+    playGroup() {
+      //获取id组
+      for (let i = 0; i < this.playlist.tracks.length; i++) {
+        this.musicIdGroup[i] = this.playlist.tracks[i].id;
+      }
+      // //通过其id获取url组
+      // for (let i = 0; i < this.musicIdGroup.length; i++) {
+      //   axios({
+      //     async:false,
+      //     method: "get",
+      //     url: "https://autumnfish.cn/song/url",
+      //     params: { id:this.musicIdGroup[i] },
+      //   }).then((res) => {
+      //     this.musicUrlGroup[i] = res.data.data[0].url;
+      //     console.log(this.musicUrlGroup)
+      //   });
+      // }
+      console.log(this.musicIdGroup);
+      this.$parent.audioGroup = this.musicIdGroup; 
+    },
+    //页码
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    }
-  }
+      //保存页码
+      this.page = val;
+      //更新数据
+      this.getComment();
+    },
+  },
+  created() {
+    this.getList();
+    this.getComment();
+  },
 };
 </script>
 
 <style >
-
 </style>

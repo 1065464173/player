@@ -36,7 +36,7 @@
       <div class="tab-content">
         <div class="items">
           <div class="item" v-for="(item,index) in playlists" :key="index">
-            <div class="img-wrap">
+            <div class="img-wrap" @click="tolist(item.id)">
               <div class="num-wrap">
                 播放量:
                 <span class="num">{{item.playCount}}</span>
@@ -49,11 +49,7 @@
         </div>
       </div>
     </div>
-    <!-- 分页器 
-    total 总条数
-    curren-page 当前页
-    page-size 每页多少条数据
-    current-change 页码改变事件 -->
+    <!-- 分页器 -->
     <el-pagination
       @current-change="handleCurrentChange"
       background
@@ -95,7 +91,7 @@ export default {
       this.topData();
       //获取歌单列表
       this.listData();
-    },
+    }
   },
   methods: {
     //获取顶部数据
@@ -118,12 +114,12 @@ export default {
         url: "https://autumnfish.cn/top/playlist/",
         params: {
           limit: 10,
-          offset: (this.page-1)*10,
+          offset: (this.page - 1) * 10,
           cat: this.tag
         }
       }).then(res => {
         //保存总条数
-        this.total= res.data.total;
+        this.total = res.data.total;
         //保存数据列表
         this.playlists = res.data.playlists;
       });
@@ -132,9 +128,13 @@ export default {
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       //保存页码
-      this.page=val
+      this.page = val;
       //更新数据
-      this.listData()
+      this.listData();
+    },
+    //跳转到歌单列表
+    tolist(id) {
+      this.$router.push({ path: "playlist", query: { id: id } });
     }
   }
 };

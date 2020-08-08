@@ -64,7 +64,7 @@
     <!-- 推荐MV -->
     <div class="mvs">
       <div class="items">
-        <div class="item" @click="toMv(10)" v-for="(item,index) in list" :key="index">
+        <div class="item" @click="toMv(item.id)" v-for="(item,index) in list" :key="index">
           <div class="img-wrap">
             <img :src="item.cover" alt />
             <div class="num-wrap">
